@@ -1,0 +1,18 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: aws-s3-node
+    container_name: aws-s3-node
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "${PORT:-3000}:${PORT:-3000}"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:${PORT:-3000}${API_PREFIX:-/api/v1}/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
